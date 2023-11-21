@@ -60,20 +60,22 @@ city_chkl <- urb_chkls %>%
 
 # vis on map
 xy <- st_coordinates(city_chkl) %>% as_tibble() ##need to convert to xy to get density map
-city_chkl %>% ggplot() + 
+fig_point_density <- city_chkl %>% ggplot() + 
   annotation_map_tile(zoom = 10) +
   geom_sf() + 
-  geom_density2d_filled(data = xy, aes(X, Y), alpha = 0.35, binwidth = 5, contour_var = "density") +
+  geom_density2d_filled(data = xy, aes(X, Y), alpha = 0.35, binwidth = 5, contour_var = "density", show.legend = F) +
  # stat_density_2d_filled(data = xy, aes(X, Y), geom = "raster", aes(fill = after_stat(density)), contour = FALSE) +
-  theme_minimal()
+  theme_bw() + labs(x = "Longitude", y = "Latitude")
+ggsave(filename = "./output/figures/03-fig_point_density.png", plot = fig_point_density)
 
 # what years have the most observations
-city_chkl %>% group_by(year) %>% summarize(count = n_distinct(eventID)) %>% 
+fig_ottawa_chkls <- city_chkl %>% group_by(year) %>% summarize(count = n_distinct(eventID)) %>% 
   ggplot() + geom_bar(aes(x = year, y = count), stat = "identity") + 
   scale_x_continuous(name="Year", breaks=seq(2001, 2023, 1), guide = guide_axis(angle = 45)) +
   scale_y_continuous(name="Count", breaks=seq(0, 600, 50)) +
   ggtitle(label = "Unique checklists in Ottawa by year") + 
   theme_bw()
+ggsave(filename = "./output/figures/03-fig_ottawa_chkls_by_year.png", plot = fig_ottawa_chkls)
 
 ### Plot interactively with leaflet or mapview
 mapview(city_chkl, zcol = "year", col.regions = RColorBrewer::brewer.pal(9,name = "PRGn"), cex = 4)
@@ -88,7 +90,5 @@ lc_t <- rast("./raw_data/WorldCover_trees_30s.tif")
 
 ### TO DO ####
 
-###get point basemap to plot with checklist data
-###get a 2d kernel or density map to visualize the distribution of points across the city
 ###calc species richness estimates (see pivot_wider.sf), remember geometries are STICKY to data
 ###american census geography, check tidycensus package and 'urban areas' in get_acs()

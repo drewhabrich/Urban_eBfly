@@ -72,17 +72,19 @@ glimpse(urb_chkls)
 
 ## 4. Visualize dataframe figures ####
 ## How many unique checklists per city in Canada are there?
-urb_chkls %>% group_by(PCNAME.x, stateProvince) %>% filter(countryCode == "CA" & !is.na(PCNAME.x)) %>% 
+unq_chkls_by_city <- urb_chkls %>% group_by(PCNAME.x, stateProvince) %>% filter(countryCode == "CA" & !is.na(PCNAME.x)) %>% 
   summarize(chkl_count = n_distinct(eventID)) %>% ungroup() %>% 
-  filter(!(PCNAME.x == "Ottawa - Gatineau" & stateProvince == "Quebec")) %>% ## OTTAWA GATINEAU ISSUE with cross-jurisdiction
+  filter(!(PCNAME.x == "Ottawa - Gatineau" & stateProvince == "Quebec")) %>% ## OTTAWA GATINEAU ISSUE b/c jurisdiction
   arrange(chkl_count) %>% 
   mutate(cityname = factor(PCNAME.x, levels = PCNAME.x)) %>% 
   ggplot() + 
     geom_bar(aes(y = cityname, x = chkl_count, fill = stateProvince), stat = "identity") +
     geom_vline(xintercept = 100) + 
     labs(title = "Complete checklists by Canadian cities", fill = "Province", x = "# of checklists", y = "City") +
-    theme_minimal()
-    
+    theme_bw() +
+    theme(legend.position = c(0.8,0.25))
+ggsave(filename = "./output/figures/02-unq_chkls_by_city.png", plot = unq_chkls_by_city)   
+
 ## How many unique checklists per YEAR in canadian cities?
 #### ALL YEARS
 urb_chkls %>% filter(countryCode == "CA" & !is.na(PCNAME.x)) %>% 
