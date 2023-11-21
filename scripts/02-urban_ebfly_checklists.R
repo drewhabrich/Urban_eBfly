@@ -18,14 +18,11 @@
 library(tidyverse)
 library(terra)
 library(sf)
-library(ggmap)
-library(geodata)
-library(osmdata)
-library(leaflet)
 
 ##2. Import dataframe ####
 #### Fix the quebec accent issue on import too
-df_chkl <- read_csv("./output/01-ebutterfly_completechecklist.csv") %>% mutate(stateProvince = str_replace(stateProvince, "Québec", "Quebec"))
+df_chkl <- read_csv("./output/01-ebutterfly_completechecklist.csv") %>% 
+           mutate(stateProvince = str_replace(stateProvince, "Québec", "Quebec"))
 glimpse(df_chkl)
 
 ## How many checklists are there by province/state
@@ -135,11 +132,3 @@ glimpse(can_urb_clean)
 can_urb_clean %>% summarize(chkl_count = n_distinct(eventID))
 
 write_csv(can_urb_clean, "./output/02-ebfly_cancities_chkl.csv")
-
-###### Plot interactively on a leaflet map
-# can_urb <- urb_chkls %>% filter(countryCode == "CA" & !is.na(PCNAME.x)) %>% 
-#                          mutate(lon = st_coordinates(.)[,1],
-#                                 lat = st_coordinates(.)[,2]) %>% st_drop_geometry()
-# plot(can_urb)
-# urban_can <- leaflet(canurb_buff) %>% addTiles() %>% addPolygons() 
-# leaflet(can_urb) %>% addMarkers()

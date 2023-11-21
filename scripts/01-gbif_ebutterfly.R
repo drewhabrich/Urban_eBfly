@@ -57,15 +57,15 @@ occ_download_meta(dl_list[[2,1]])
 
 ### 2.2 Import gbif data to R from the downloaded dataset; [[row, col]], NOTE THIS WILL DEPEND ON YOUR GBIF ACCOUNT ####
 # download to local working directory first as .zip
-eb_spl <- occ_download_get(dl_list[[2,1]], path = "./raw_data/", overwrite = F) #species list, 0053910
-eb_csv <- occ_download_get(dl_list[[3,1]], path = "./raw_data/", overwrite = F) #simple csv, 0053909
+# eb_spl <- occ_download_get(dl_list[[2,1]], path = "./raw_data/", overwrite = F) #species list, 0053910
+# eb_csv <- occ_download_get(dl_list[[3,1]], path = "./raw_data/", overwrite = F) #simple csv, 0053909
 eb_dwc <- occ_download_get(dl_list[[4,1]], path = "./raw_data/", overwrite = F) #darwinian core archive, 0053908
 # import into R as a dataframe from .zip
-df_spl <- occ_download_import(eb_spl)
-df_csv <- occ_download_import(eb_csv)
-df_dwc <- occ_download_import(key = dl_list[[4,1]], path = "./raw_data/")
+# df_spl <- occ_download_import(eb_spl)
+# df_csv <- occ_download_import(eb_csv)
+df_dwc <- occ_download_import(key = dl_list[[4,1]], path = "./raw_data/") #NOTE: file is too large for my github account
 
-## 3. EDA of dataframes (I think only the dwc has checklist data in RAW form) ####
+## 3. EDA of dataframes (only the dwc has checklist data in RAW form) ####
 glimpse(df_dwc)
 
 ## create a vector of empty columns and 1-entry columns
